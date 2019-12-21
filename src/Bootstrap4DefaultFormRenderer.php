@@ -358,7 +358,17 @@ class Bootstrap4DefaultFormRenderer implements IFormRenderer
         if (($this->counter + 1) % 2) {
             $pair->class($this->getValue('pair .odd'), true);
         }
-        $pair->id = $control->getOption('id');
+
+        // add form-group id automatically
+        if (!empty($control->name)) {
+            $pair->id = 'form-group-' . $control->name;
+        }
+
+        // add form-group id manually
+        if (!empty($control->getOption('id'))) {
+            $pair->id = $control->getOption('id');
+        }
+
         return $pair->render(0);
     }
 
