@@ -1,4 +1,7 @@
 {
     "name": "opendevel/nette-renderers",
-    "require": {}
+    "require": {
+        "nette/forms": "^3.0",
+        "nette/utils": "^3.0"
+    }
 }
