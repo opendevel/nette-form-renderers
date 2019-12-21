@@ -13,7 +13,7 @@ use Nette\SmartObject;
 use Nette\Utils\Html;
 use Nette\Utils\IHtmlString;
 
-class Bootstrap4DefaultRenderer implements IFormRenderer
+class Bootstrap4DefaultFormRenderer implements IFormRenderer
 {
 
     use SmartObject;
