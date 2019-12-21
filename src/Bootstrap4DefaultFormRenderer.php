@@ -155,7 +155,6 @@ class Bootstrap4DefaultFormRenderer implements IFormRenderer
         return $s;
     }
 
-
     /**
      * Renders form begin.
      */
@@ -187,7 +186,6 @@ class Bootstrap4DefaultFormRenderer implements IFormRenderer
         }
     }
 
-
     /**
      * Renders form end.
      */
@@ -208,7 +206,6 @@ class Bootstrap4DefaultFormRenderer implements IFormRenderer
 
         return $s . $this->form->getElementPrototype()->endTag() . "\n";
     }
-
 
     /**
      * Renders validation errors (per form or per control).
@@ -239,7 +236,6 @@ class Bootstrap4DefaultFormRenderer implements IFormRenderer
         }
         return "\n" . $container->render($control ? 1 : 0);
     }
-
 
     /**
      * Renders form body.
