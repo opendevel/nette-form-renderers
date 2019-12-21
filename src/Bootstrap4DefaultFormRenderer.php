@@ -61,57 +61,57 @@ class Bootstrap4DefaultFormRenderer implements IFormRenderer
         ],
 
         'error' => [
-            'container' => 'ul class=error',
-            'item' => 'li',
+            'container' => 'div',
+            'item' => 'div class="alert alert-error alert-danger"',
         ],
 
         'group' => [
-            'container' => 'fieldset',
-            'label' => 'legend',
-            'description' => 'p',
+            'container' => 'fieldset class="card"',
+            'label' => 'h4 class="card-header"',
+            'description' => 'p class="fieldset-description"',
         ],
 
         'controls' => [
-            'container' => 'table',
+            'container' => null,
         ],
 
         'pair' => [
-            'container' => 'tr',
+            'container' => 'div class="form-group"',
             '.required' => 'required',
             '.optional' => null,
             '.odd' => null,
-            '.error' => null,
+            '.error' => 'has-error',
         ],
 
         'control' => [
-            'container' => 'td',
+            'container' => null,
             '.odd' => null,
 
-            'description' => 'small',
+            'description' => 'span class="help-block text-muted"',
             'requiredsuffix' => '',
-            'errorcontainer' => 'span class=error',
+            'errorcontainer' => 'span class="help-block text-danger"',
             'erroritem' => '',
 
             '.required' => 'required',
             '.error' => null,
-            '.text' => 'text',
-            '.password' => 'text',
+            '.text' => 'form-control',
+            '.password' => 'form-control',
             '.file' => 'text',
-            '.email' => 'text',
-            '.number' => 'text',
-            '.submit' => 'button',
+            '.email' => 'form-control',
+            '.number' => 'form-control',
+            '.submit' => 'btn btn-primary',
             '.image' => 'imagebutton',
-            '.button' => 'button',
+            '.button' => 'btn btn-primary',
         ],
 
         'label' => [
-            'container' => 'th',
-            'suffix' => null,
-            'requiredsuffix' => '',
+            'container' => null,
+            'suffix' => ':',
+            'requiredsuffix' => '*',
         ],
 
         'hidden' => [
-            'container' => null,
+            'container' => 'div',
         ],
     ];
 
