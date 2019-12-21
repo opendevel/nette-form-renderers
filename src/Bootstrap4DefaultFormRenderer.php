@@ -274,6 +274,12 @@ class Bootstrap4DefaultFormRenderer implements IFormRenderer
                 $s .= "\n" . $this->getWrapper('group label')->setText($text) . "\n";
             }
 
+            if ($container->getChildren()) {
+                foreach ($container->getChildren() as $child) {
+                    $s .= "\n" . $child->startTag();
+                }
+            }
+
             $text = $group->getOption('description');
             if ($text instanceof IHtmlString) {
                 $s .= $text;
@@ -285,6 +291,12 @@ class Bootstrap4DefaultFormRenderer implements IFormRenderer
             }
 
             $s .= $this->renderControls($group);
+
+            if ($container->getChildren()) {
+                foreach ($container->getChildren() as $child) {
+                    $s .= "\n" . $child->endTag();
+                }
+            }
 
             $remains = $container->endTag() . "\n" . $remains;
             if (!$group->getOption('embedNext')) {
