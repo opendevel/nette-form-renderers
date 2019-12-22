@@ -70,6 +70,7 @@ class Bootstrap4DefaultFormRenderer implements IFormRenderer
             'container' => 'fieldset class="card"',
             'label' => 'h4 class="card-header"',
             'description' => 'p class="fieldset-description"',
+            'subcontainer' => 'div class="card-body"',
         ],
 
         'controls' => [
@@ -258,6 +259,11 @@ class Bootstrap4DefaultFormRenderer implements IFormRenderer
             $container = $container instanceof Html ? clone $container : Html::el($container);
 
             $container->id = $group->getOption('id', 'group-' . $groupKey);
+
+            $subcontainer = $group->getOption('subcontainer', $this->getWrapper('group subcontainer'));
+            $subcontainer = $subcontainer instanceof Html ? clone $subcontainer : Html::el($subcontainer);
+
+            $container->addHtml($subcontainer);
 
             $s .= "\n" . $container->startTag();
 
