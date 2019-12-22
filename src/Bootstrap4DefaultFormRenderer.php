@@ -258,7 +258,9 @@ class Bootstrap4DefaultFormRenderer implements IFormRenderer
             $container = $group->getOption('container', $this->getWrapper('group container'));
             $container = $container instanceof Html ? clone $container : Html::el($container);
 
-            $container->id = $group->getOption('id', 'group-' . $groupKey);
+            if (empty($container->id)) {
+                $container->id = $group->getOption('id', 'group-' . $groupKey);
+            }
 
             $subcontainer = $group->getOption('subcontainer', $this->getWrapper('group subcontainer'));
             $subcontainer = $subcontainer instanceof Html ? clone $subcontainer : Html::el($subcontainer);
