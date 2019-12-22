@@ -12,6 +12,7 @@ use Nette\Forms\IFormRenderer;
 use Nette\SmartObject;
 use Nette\Utils\Html;
 use Nette\Utils\IHtmlString;
+use Nette\Utils\Strings;
 
 class Bootstrap4DefaultFormRenderer implements IFormRenderer
 {
@@ -247,17 +248,18 @@ class Bootstrap4DefaultFormRenderer implements IFormRenderer
         $defaultContainer = $this->getWrapper('group container');
         $translator = $this->form->getTranslator();
 
-        foreach ($this->form->getGroups() as $group) {
+        foreach ($this->form->getGroups() as $groupKey => $group) {
             if (!$group->getControls() || !$group->getOption('visual')) {
                 continue;
             }
 
+            $groupKey = Strings::webalize((string)$groupKey);
+
             $container = $group->getOption('container', $defaultContainer);
             $container = $container instanceof Html ? clone $container : Html::el($container);
 
-            $id = $group->getOption('id');
-            if ($id) {
-                $container->id = $id;
+            if (empty($container->id)) {
+                $container->id = $group->getOption('id', 'group-' . $groupKey);
             }
 
             $s .= "\n" . $container->startTag();
