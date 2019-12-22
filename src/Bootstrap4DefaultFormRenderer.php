@@ -245,7 +245,6 @@ class Bootstrap4DefaultFormRenderer implements IFormRenderer
     {
         $s = $remains = '';
 
-        $defaultContainer = $this->getWrapper('group container');
         $translator = $this->form->getTranslator();
 
         foreach ($this->form->getGroups() as $groupKey => $group) {
@@ -255,7 +254,7 @@ class Bootstrap4DefaultFormRenderer implements IFormRenderer
 
             $groupKey = Strings::webalize((string)$groupKey);
 
-            $container = $group->getOption('container', $defaultContainer);
+            $container = $group->getOption('container', $this->getWrapper('group container'));
             $container = $container instanceof Html ? clone $container : Html::el($container);
 
             $container->id = $group->getOption('id', 'group-' . $groupKey);
