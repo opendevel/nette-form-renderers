@@ -405,17 +405,7 @@ class Bootstrap4DefaultFormRenderer implements IFormRenderer
             if (!$control instanceof IControl) {
                 throw new \Nette\InvalidArgumentException('Argument must be array of Nette\Forms\IControl instances.');
             }
-            $description = $control->getOption('description');
-            if ($description instanceof IHtmlString) {
-                $description = ' ' . $description;
-            } elseif ($description !== null) { // intentionally ==
-                if ($control instanceof BaseControl) {
-                    $description = $control->translate($description);
-                }
-                $description = ' ' . $this->getWrapper('control description')->setText($description);
-            } else {
-                $description = '';
-            }
+            $description = $this->renderControlDescription($control);
 
             $control->setOption('rendered', true);
             $el = $control->getControl();
@@ -463,17 +453,7 @@ class Bootstrap4DefaultFormRenderer implements IFormRenderer
             $body->class($this->getValue('control .odd'), true);
         }
 
-        $description = $control->getOption('description');
-        if ($description instanceof IHtmlString) {
-            $description = ' ' . $description;
-        } elseif ($description !== null) { // intentionally ==
-            if ($control instanceof BaseControl) {
-                $description = $control->translate($description);
-            }
-            $description = ' ' . $this->getWrapper('control description')->setText($description);
-        } else {
-            $description = '';
-        }
+        $description = $this->renderControlDescription($control);
 
         if ($control->isRequired()) {
             $description = $this->getValue('control requiredsuffix') . $description;
@@ -504,6 +484,23 @@ class Bootstrap4DefaultFormRenderer implements IFormRenderer
     {
         $name = explode(' ', $name);
         return $this->wrappers[$name[0]][$name[1]] ?? null;
+    }
+
+    private function renderControlDescription(IControl $control): string
+    {
+        $description = $control->getOption('description');
+        if ($description instanceof IHtmlString) {
+            $description = ' ' . $description;
+        } elseif ($description !== null) { // intentionally ==
+            if ($control instanceof BaseControl) {
+                $description = $control->translate($description);
+            }
+            $description = ' ' . $this->getWrapper('control description')->setText($description);
+        } else {
+            $description = '';
+        }
+
+        return $description;
     }
 
 }
