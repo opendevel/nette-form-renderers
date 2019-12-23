@@ -244,7 +244,8 @@ class Bootstrap4DefaultFormRenderer implements IFormRenderer
      */
     public function renderBody(): string
     {
-        $s = $remains = '';
+        $s = '';
+        $remains = [];
 
         $translator = $this->form->getTranslator();
 
@@ -263,10 +264,10 @@ class Bootstrap4DefaultFormRenderer implements IFormRenderer
             }
 
             if ($container->getName() === 'fieldset') { //@todo odstranit/zmenit
-            $subcontainer = $group->getOption('subcontainer', $this->getWrapper('group subcontainer'));
-            $subcontainer = $subcontainer instanceof Html ? clone $subcontainer : Html::el($subcontainer);
+                $subcontainer = $group->getOption('subcontainer', $this->getWrapper('group subcontainer'));
+                $subcontainer = $subcontainer instanceof Html ? clone $subcontainer : Html::el($subcontainer);
 
-            $container->addHtml($subcontainer);
+                $container->addHtml($subcontainer);
             }
 
             $s .= "\n" . $container->startTag();
@@ -305,14 +306,19 @@ class Bootstrap4DefaultFormRenderer implements IFormRenderer
                 }
             }
 
-            $remains = $container->endTag() . "\n" . $remains;
+            array_push($remains, $container->endTag());
             if (!$group->getOption('embedNext')) {
-                $s .= $remains;
-                $remains = '';
+                while (count($remains)) {
+                    $s .= array_pop($remains) . "\n";
+                }
             }
         }
 
-        $s .= $remains . $this->renderControls($this->form);
+        while (count($remains)) {
+            $s .= array_pop($remains) . "\n";
+        }
+
+        $s .= $this->renderControls($this->form);
 
         $container = $this->getWrapper('form container');
         $container->setHtml($s);
