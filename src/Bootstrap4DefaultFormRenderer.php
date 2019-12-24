@@ -263,12 +263,8 @@ class Bootstrap4DefaultFormRenderer implements IFormRenderer
                 $container->id = $group->getOption('id', 'group-' . $groupKey);
             }
 
-            if ($container->getName() === 'fieldset') { //@todo odstranit/zmenit
-                $subcontainer = $group->getOption('subcontainer', $this->getWrapper('group subcontainer'));
-                $subcontainer = $subcontainer instanceof Html ? clone $subcontainer : Html::el($subcontainer);
-
-                $container->addHtml($subcontainer);
-            }
+            $subcontainer = $group->getOption('subcontainer', $this->getWrapper('group subcontainer'));
+            $subcontainer = $subcontainer instanceof Html ? clone $subcontainer : Html::el($subcontainer);
 
             $s .= "\n" . $container->startTag();
 
@@ -282,11 +278,7 @@ class Bootstrap4DefaultFormRenderer implements IFormRenderer
                 $s .= "\n" . $this->getWrapper('group label')->setText($text) . "\n";
             }
 
-            if ($container->getChildren()) {
-                foreach ($container->getChildren() as $child) {
-                    $s .= "\n" . $child->startTag();
-                }
-            }
+            $s .= $subcontainer->startTag();
 
             $text = $group->getOption('description');
             if ($text instanceof IHtmlString) {
@@ -300,13 +292,9 @@ class Bootstrap4DefaultFormRenderer implements IFormRenderer
 
             $s .= $this->renderControls($group);
 
-            if ($container->getChildren()) {
-                foreach ($container->getChildren() as $child) {
-                    $s .= "\n" . $child->endTag();
-                }
-            }
-
             array_push($remains, $container->endTag());
+            array_push($remains, $subcontainer->endTag());
+
             if (!$group->getOption('embedNext')) {
                 while (count($remains)) {
                     $s .= array_pop($remains) . "\n";
