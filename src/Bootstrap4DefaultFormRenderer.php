@@ -102,8 +102,10 @@ class Bootstrap4DefaultFormRenderer implements IFormRenderer
             '.email' => 'form-control',
             '.number' => 'form-control',
             '.submit' => 'btn btn-primary',
-            '.image' => 'imagebutton',
-            '.button' => 'btn btn-primary',
+            '.image' => 'image',
+            '.button' => 'button',
+            '.textarea' => 'form-control',
+            '.select' => 'form-control',
         ],
 
         'label' => [
@@ -458,6 +460,10 @@ class Bootstrap4DefaultFormRenderer implements IFormRenderer
         if ($el instanceof Html) {
             if ($el->getName() === 'input') {
                 $el->class($this->getValue("control .$el->type"), true);
+            } elseif ($el->getName() === 'textarea') {
+                $el->class($this->getValue("control .textarea"), true);
+            } elseif ($el->getName() === 'select') {
+                $el->class($this->getValue("control .select"), true);
             }
             $el->class($this->getValue('control .error'), $control->hasErrors());
         }
