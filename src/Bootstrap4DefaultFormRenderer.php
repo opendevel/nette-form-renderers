@@ -102,8 +102,10 @@ class Bootstrap4DefaultFormRenderer implements IFormRenderer
             '.email' => 'form-control',
             '.number' => 'form-control',
             '.submit' => 'btn btn-primary',
-            '.image' => 'imagebutton',
-            '.button' => 'btn btn-primary',
+            '.image' => 'image',
+            '.button' => 'button',
+            '.textarea' => 'form-control',
+            '.select' => 'form-control',
         ],
 
         'label' => [
@@ -244,7 +246,8 @@ class Bootstrap4DefaultFormRenderer implements IFormRenderer
      */
     public function renderBody(): string
     {
-        $s = $remains = '';
+        $s = '';
+        $remains = [];
 
         $translator = $this->form->getTranslator();
 
@@ -265,8 +268,6 @@ class Bootstrap4DefaultFormRenderer implements IFormRenderer
             $subcontainer = $group->getOption('subcontainer', $this->getWrapper('group subcontainer'));
             $subcontainer = $subcontainer instanceof Html ? clone $subcontainer : Html::el($subcontainer);
 
-            $container->addHtml($subcontainer);
-
             $s .= "\n" . $container->startTag();
 
             $text = $group->getOption('label');
@@ -279,11 +280,7 @@ class Bootstrap4DefaultFormRenderer implements IFormRenderer
                 $s .= "\n" . $this->getWrapper('group label')->setText($text) . "\n";
             }
 
-            if ($container->getChildren()) {
-                foreach ($container->getChildren() as $child) {
-                    $s .= "\n" . $child->startTag();
-                }
-            }
+            $s .= $subcontainer->startTag();
 
             $text = $group->getOption('description');
             if ($text instanceof IHtmlString) {
@@ -297,20 +294,21 @@ class Bootstrap4DefaultFormRenderer implements IFormRenderer
 
             $s .= $this->renderControls($group);
 
-            if ($container->getChildren()) {
-                foreach ($container->getChildren() as $child) {
-                    $s .= "\n" . $child->endTag();
-                }
-            }
+            array_push($remains, $container->endTag());
+            array_push($remains, $subcontainer->endTag());
 
-            $remains = $container->endTag() . "\n" . $remains;
             if (!$group->getOption('embedNext')) {
-                $s .= $remains;
-                $remains = '';
+                while (count($remains)) {
+                    $s .= array_pop($remains) . "\n";
+                }
             }
         }
 
-        $s .= $remains . $this->renderControls($this->form);
+        while (count($remains)) {
+            $s .= array_pop($remains) . "\n";
+        }
+
+        $s .= $this->renderControls($this->form);
 
         $container = $this->getWrapper('form container');
         $container->setHtml($s);
@@ -403,17 +401,7 @@ class Bootstrap4DefaultFormRenderer implements IFormRenderer
             if (!$control instanceof IControl) {
                 throw new \Nette\InvalidArgumentException('Argument must be array of Nette\Forms\IControl instances.');
             }
-            $description = $control->getOption('description');
-            if ($description instanceof IHtmlString) {
-                $description = ' ' . $description;
-            } elseif ($description !== null) { // intentionally ==
-                if ($control instanceof BaseControl) {
-                    $description = $control->translate($description);
-                }
-                $description = ' ' . $this->getWrapper('control description')->setText($description);
-            } else {
-                $description = '';
-            }
+            $description = $this->renderControlDescription($control);
 
             $control->setOption('rendered', true);
             $el = $control->getControl();
@@ -461,17 +449,7 @@ class Bootstrap4DefaultFormRenderer implements IFormRenderer
             $body->class($this->getValue('control .odd'), true);
         }
 
-        $description = $control->getOption('description');
-        if ($description instanceof IHtmlString) {
-            $description = ' ' . $description;
-        } elseif ($description !== null) { // intentionally ==
-            if ($control instanceof BaseControl) {
-                $description = $control->translate($description);
-            }
-            $description = ' ' . $this->getWrapper('control description')->setText($description);
-        } else {
-            $description = '';
-        }
+        $description = $this->renderControlDescription($control);
 
         if ($control->isRequired()) {
             $description = $this->getValue('control requiredsuffix') . $description;
@@ -482,6 +460,10 @@ class Bootstrap4DefaultFormRenderer implements IFormRenderer
         if ($el instanceof Html) {
             if ($el->getName() === 'input') {
                 $el->class($this->getValue("control .$el->type"), true);
+            } elseif ($el->getName() === 'textarea') {
+                $el->class($this->getValue("control .textarea"), true);
+            } elseif ($el->getName() === 'select') {
+                $el->class($this->getValue("control .select"), true);
             }
             $el->class($this->getValue('control .error'), $control->hasErrors());
         }
@@ -502,6 +484,23 @@ class Bootstrap4DefaultFormRenderer implements IFormRenderer
     {
         $name = explode(' ', $name);
         return $this->wrappers[$name[0]][$name[1]] ?? null;
+    }
+
+    private function renderControlDescription(IControl $control): string
+    {
+        $description = $control->getOption('description');
+        if ($description instanceof IHtmlString) {
+            $description = ' ' . $description;
+        } elseif ($description !== null) { // intentionally ==
+            if ($control instanceof BaseControl) {
+                $description = $control->translate($description);
+            }
+            $description = ' ' . $this->getWrapper('control description')->setText($description);
+        } else {
+            $description = '';
+        }
+
+        return $description;
     }
 
 }
