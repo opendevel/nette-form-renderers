@@ -188,59 +188,8 @@ abstract class Bootstrap4BasicFormRenderer implements IFormRenderer
         $s = '';
         $remains = [];
 
-        $translator = $this->form->getTranslator();
-
-        foreach ($this->form->getGroups() as $groupKey => $group) {
-            if (!$group->getControls() || !$group->getOption('visual')) {
-                continue;
-            }
-
-            $groupKey = Strings::webalize((string)$groupKey);
-
-            $container = $group->getOption('container', $this->getWrapper('group container'));
-            $container = $container instanceof Html ? clone $container : Html::el($container);
-
-            if (empty($container->id)) {
-                $container->id = $group->getOption('id', 'group-' . $groupKey);
-            }
-
-            $subcontainer = $group->getOption('subcontainer', $this->getWrapper('group subcontainer'));
-            $subcontainer = $subcontainer instanceof Html ? clone $subcontainer : Html::el($subcontainer);
-
-            $s .= "\n" . $container->startTag();
-
-            $text = $group->getOption('label');
-            if ($text instanceof IHtmlString) {
-                $s .= $this->getWrapper('group label')->addHtml($text);
-            } elseif ($text !== null) { // intentionally ==
-                if ($translator !== null) {
-                    $text = $translator->translate($text);
-                }
-                $s .= "\n" . $this->getWrapper('group label')->setText($text) . "\n";
-            }
-
-            $s .= $subcontainer->startTag();
-
-            $text = $group->getOption('description');
-            if ($text instanceof IHtmlString) {
-                $s .= $text;
-            } elseif ($text !== null) { // intentionally ==
-                if ($translator !== null) {
-                    $text = $translator->translate($text);
-                }
-                $s .= $this->getWrapper('group description')->setText($text) . "\n";
-            }
-
-            $s .= $this->renderControls($group);
-
-            array_push($remains, $container->endTag());
-            array_push($remains, $subcontainer->endTag());
-
-            if (!$group->getOption('embedNext')) {
-                while (count($remains)) {
-                    $s .= array_pop($remains) . "\n";
-                }
-            }
+        foreach ($this->form->getGroups() as $groupName => $group) {
+            $s .= $this->renderGroup((string)$groupName, $remains);
         }
 
         while (count($remains)) {
@@ -252,6 +201,69 @@ abstract class Bootstrap4BasicFormRenderer implements IFormRenderer
         $container = $this->getWrapper('form container');
         $container->setHtml($s);
         return $container->render(0);
+    }
+
+    public function renderGroup(string $groupName, array &$remains): string
+    {
+        $group = $this->form->getGroup($groupName);
+
+        if (!$group->getControls() || !$group->getOption('visual')) {
+            return '';
+        }
+
+        $s = '';
+
+        $translator = $this->form->getTranslator();
+
+        $groupKey = is_string($groupName) ? $groupName : 'group-' . (string)$groupName;
+        $groupKey = Strings::webalize($groupName);
+
+        $container = $group->getOption('container', $this->getWrapper('group container'));
+        $container = $container instanceof Html ? clone $container : Html::el($container);
+
+        if (empty($container->id)) {
+            $container->id = $group->getOption('id', 'group-' . $groupKey);
+        }
+
+        $subcontainer = $group->getOption('subcontainer', $this->getWrapper('group subcontainer'));
+        $subcontainer = $subcontainer instanceof Html ? clone $subcontainer : Html::el($subcontainer);
+
+        $s .= "\n" . $container->startTag();
+
+        $text = $group->getOption('label');
+        if ($text instanceof IHtmlString) {
+            $s .= $this->getWrapper('group label')->addHtml($text);
+        } elseif ($text !== null) { // intentionally ==
+            if ($translator !== null) {
+                $text = $translator->translate($text);
+            }
+            $s .= "\n" . $this->getWrapper('group label')->setText($text) . "\n";
+        }
+
+        $s .= $subcontainer->startTag();
+
+        $text = $group->getOption('description');
+        if ($text instanceof IHtmlString) {
+            $s .= $text;
+        } elseif ($text !== null) { // intentionally ==
+            if ($translator !== null) {
+                $text = $translator->translate($text);
+            }
+            $s .= $this->getWrapper('group description')->setText($text) . "\n";
+        }
+
+        $s .= $this->renderControls($group);
+
+        array_push($remains, $container->endTag());
+        array_push($remains, $subcontainer->endTag());
+
+        if (!$group->getOption('embedNext')) {
+            while (count($remains)) {
+                $s .= array_pop($remains) . "\n";
+            }
+        }
+
+        return $s;
     }
 
     /**
