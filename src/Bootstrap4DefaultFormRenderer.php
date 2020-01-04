@@ -112,6 +112,8 @@ class Bootstrap4DefaultFormRenderer implements IFormRenderer
             'container' => null,
             'suffix' => ':',
             'requiredsuffix' => '*',
+            'class' => null,
+            '.required' => 'required',
         ],
 
         'hidden' => [
@@ -430,8 +432,9 @@ class Bootstrap4DefaultFormRenderer implements IFormRenderer
         $label = $control->getLabel();
         if ($label instanceof Html) {
             $label->addHtml($suffix);
+            $label->class($this->getValue('label class'), true);
             if ($control->isRequired()) {
-                $label->class($this->getValue('control .required'), true);
+                $label->class($this->getValue('label .required'), true);
             }
         } elseif ($label !== null) { // @intentionally ==
             $label .= $suffix;
