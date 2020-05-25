@@ -41,9 +41,9 @@ class Bootstrap4DefaultFormRenderer extends Bootstrap4BasicFormRenderer
             'container' => null,
             '.odd' => null,
 
-            'description' => 'span class="help-block text-muted"',
+            'description' => 'small class="form-text text-muted"',
             'requiredsuffix' => '',
-            'errorcontainer' => 'span class="help-block text-danger"',
+            'errorcontainer' => 'small class="form-text text-danger"',
             'erroritem' => '',
 
             '.required' => 'required',  //@todo not used

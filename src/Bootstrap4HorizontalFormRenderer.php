@@ -41,9 +41,9 @@ class Bootstrap4HorizontalFormRenderer extends Bootstrap4BasicFormRenderer
             'container' => 'div class="col-sm-10"',
             '.odd' => null,
 
-            'description' => 'span class="help-block text-muted"',
+            'description' => 'small class="form-text text-muted"',
             'requiredsuffix' => '',
-            'errorcontainer' => 'span class="help-block text-danger"',
+            'errorcontainer' => 'small class="form-text text-danger"',
             'erroritem' => '',
 
             '.required' => 'required',  //@todo not used
