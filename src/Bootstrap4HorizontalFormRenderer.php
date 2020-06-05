@@ -38,7 +38,7 @@ class Bootstrap4HorizontalFormRenderer extends Bootstrap4BasicFormRenderer
         ],
 
         'control' => [
-            'container' => 'div class="col-sm-10"',
+            'container' => 'div class="col-md-9 col-lg-10"',
             '.odd' => null,
 
             'description' => 'small class="form-text text-muted"',
@@ -64,7 +64,7 @@ class Bootstrap4HorizontalFormRenderer extends Bootstrap4BasicFormRenderer
             'container' => null,
             'suffix' => ':',
             'requiredsuffix' => '*',
-            'class' => 'col-sm-2 col-form-label',
+            'class' => 'col-md-3 col-lg-2 col-form-label',
             '.required' => 'required',
         ],
 
